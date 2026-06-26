@@ -56,7 +56,7 @@ export default function Login() {
             <span className="material-symbols-outlined text-secondary text-3xl" style={{fontVariationSettings: "'FILL' 1"}}>account_balance_wallet</span>
           </div>
           <h1 className="text-display-md font-display-md text-on-surface tracking-tight">
-            Wealth
+            Vodka
           </h1>
           <p className="text-body-md font-body-md text-on-surface-variant">
             Quản lý tài chính cá nhân thông minh
@@ -132,7 +132,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-13 rounded-xl bg-gradient-to-r from-secondary to-secondary-fixed-dim text-on-secondary font-bold text-body-lg tracking-wide shadow-lg shadow-secondary/20 hover:shadow-secondary/30 hover:brightness-110 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-secondary to-secondary-fixed-dim text-on-secondary font-bold text-[16px] tracking-wide shadow-lg shadow-secondary/25 hover:shadow-xl hover:shadow-secondary/40 hover:brightness-110 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2 mt-2"
             >
               {loading ? (
                 <>
@@ -143,7 +143,10 @@ export default function Login() {
                   Đang đăng nhập...
                 </>
               ) : (
-                'Đăng nhập'
+                <span className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[20px]" style={{fontVariationSettings: "'FILL' 1"}}>login</span>
+                  Đăng nhập
+                </span>
               )}
             </button>
           </form>
@@ -151,7 +154,7 @@ export default function Login() {
 
         {/* Footer */}
         <p className="text-center text-label-sm font-label-sm text-outline mt-8">
-          Premium Minimalist Wealth • v1.0
+          Vodka Finance • v1.0
         </p>
       </div>
     </div>
