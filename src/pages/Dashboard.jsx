@@ -122,7 +122,7 @@ export default function Dashboard() {
             )}
           </div>
 
-          <div className="grid gap-sm mt-lg pt-lg border-t border-white/10 md:grid-cols-2">
+          <div className="grid grid-cols-2 gap-sm mt-lg pt-lg border-t border-white/10">
             <div className="flex flex-col">
               <span className="text-[10px] text-white/60 mb-xs flex items-center gap-xs">
                 <span className="w-1.5 h-1.5 bg-secondary-fixed rounded-full"></span>
