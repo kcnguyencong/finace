@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { supabase } from "../lib/supabase"
+import { formatCurrency } from "../lib/format"
+import { AreaChart, Area, ResponsiveContainer } from "recharts"
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([])
+  const [chartData, setChartData] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -17,10 +20,12 @@ export default function Dashboard() {
         .from('transactions')
         .select('*')
         .order('transaction_date', { ascending: false })
-        .limit(10)
       
       if (error) throw error
-      if (data) setTransactions(data)
+      if (data) {
+        setTransactions(data)
+        processChartData(data)
+      }
     } catch (error) {
       console.error('Error fetching transactions:', error)
     } finally {
@@ -28,14 +33,40 @@ export default function Dashboard() {
     }
   }
 
+  function processChartData(data) {
+    // Group by day and calculate cumulative balance
+    // First, sort ascending
+    const sorted = [...data].sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date))
+    let balance = 0
+    const grouped = {}
+    
+    sorted.forEach(tx => {
+      const dateStr = new Date(tx.transaction_date).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' })
+      const amount = Number(tx.amount)
+      if (tx.type === 'income') balance += amount
+      if (tx.type === 'expense') balance -= amount
+      grouped[dateStr] = balance
+    })
+    
+    const cData = Object.keys(grouped).map(date => ({
+      name: date,
+      balance: grouped[date]
+    }))
+
+    // Add a default starting point if empty
+    if (cData.length === 0) {
+      cData.push({ name: 'Hôm nay', balance: 0 })
+    }
+    
+    setChartData(cData)
+  }
+
   // Calculate totals
   const totalIncome = transactions.filter(t => t.type === 'income').reduce((acc, curr) => acc + Number(curr.amount), 0)
   const totalExpense = transactions.filter(t => t.type === 'expense').reduce((acc, curr) => acc + Number(curr.amount), 0)
   const netTotal = totalIncome - totalExpense
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
-  }
+  const latestTransactions = transactions.slice(0, 10)
 
   return (
     <div className="bg-surface text-on-surface min-h-screen pb-24 md:pb-0">
@@ -67,12 +98,28 @@ export default function Dashboard() {
           <div className="flex justify-between items-start mb-md">
             <div>
               <div className="flex items-center gap-xs text-white/70 text-label-sm font-label-sm mb-xs">
-                TỔNG LƯU CHUYỂN HÔM NAY
+                TỔNG LƯU CHUYỂN
                 <span className="material-symbols-outlined text-[16px]">visibility</span>
               </div>
               <div className="text-display-md font-display-md">{netTotal > 0 ? '+' : ''}{formatCurrency(netTotal)}</div>
               <div className="text-label-sm font-label-sm text-white/50">Tổng thu - Tổng chi</div>
             </div>
+          </div>
+
+          <div className="h-24 w-full mt-lg relative">
+            {chartData.length > 0 && (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData}>
+                  <defs>
+                    <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#4edea3" stopOpacity={0.4}/>
+                      <stop offset="95%" stopColor="#4edea3" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <Area type="monotone" dataKey="balance" stroke="#4edea3" strokeWidth={3} fillOpacity={1} fill="url(#colorBalance)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
 
           <div className="grid gap-sm mt-lg pt-lg border-t border-white/10 md:grid-cols-2">
@@ -120,9 +167,9 @@ export default function Dashboard() {
           <div className="space-y-sm">
             {loading ? (
               <p className="text-center text-on-surface-variant text-sm py-4">Đang tải...</p>
-            ) : transactions.length === 0 ? (
+            ) : latestTransactions.length === 0 ? (
               <p className="text-center text-on-surface-variant text-sm py-4">Chưa có giao dịch nào.</p>
-            ) : transactions.map((tx) => (
+            ) : latestTransactions.map((tx) => (
               <Link to={`/transaction?id=${tx.id}`} key={tx.id} className="bg-surface-container-lowest rounded-xl p-md flex items-center justify-between shadow-[0px_2px_8px_rgba(15,23,42,0.03)] border border-outline-variant/10 group active:scale-[0.98] transition-transform cursor-pointer hover:bg-surface-container-low">
                 <div className="flex items-center gap-md">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center ${tx.type === 'income' ? 'bg-secondary-container/20 text-secondary' : 'bg-error-container/20 text-error'}`}>

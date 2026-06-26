@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Input } from "../components/ui/Input"
 import { Button } from "../components/ui/Button"
 import { supabase } from "../lib/supabase"
 
@@ -13,13 +12,17 @@ export default function AddTransaction() {
   const [note, setNote] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const expenseCategories = ['Ăn uống', 'Mua sắm', 'Di chuyển', 'Giải trí', 'Nhà cửa', 'Hóa đơn']
+  const incomeCategories = ['Lương', 'Đầu tư', 'Thưởng', 'Kinh doanh', 'Được tặng']
+  const categories = type === 'expense' ? expenseCategories : incomeCategories
+
   const handleSave = async () => {
     if (!amount || !category) return alert('Vui lòng nhập số tiền và danh mục')
     try {
       setLoading(true)
       const { error } = await supabase.from('transactions').insert([
         {
-          title: category, // For simplicity, using category as title or could be input
+          title: category, // Using category as title for simplicity
           amount: parseFloat(amount),
           type,
           category,
@@ -72,14 +75,14 @@ export default function AddTransaction() {
               <label className="text-label-sm font-label-sm text-on-surface-variant">Loại giao dịch</label>
               <div className="grid grid-cols-2 gap-2">
                 <Button 
-                  onClick={() => setType('income')}
+                  onClick={() => { setType('income'); setCategory('') }}
                   variant={type === 'income' ? 'primary' : 'ghost'} 
                   className={type === 'income' ? 'bg-secondary-container/20 text-secondary shadow-none hover:bg-secondary-container/30' : 'bg-surface-container text-on-surface'}
                 >
                   Thu nhập
                 </Button>
                 <Button 
-                  onClick={() => setType('expense')}
+                  onClick={() => { setType('expense'); setCategory('') }}
                   variant={type === 'expense' ? 'primary' : 'ghost'} 
                   className={type === 'expense' ? 'bg-error-container/20 text-error shadow-none hover:bg-error-container/30' : 'bg-surface-container text-on-surface'}
                 >
@@ -92,12 +95,17 @@ export default function AddTransaction() {
               <label className="text-label-sm font-label-sm text-on-surface-variant">Danh mục</label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">category</span>
-                <Input 
+                <input 
+                  list="category-suggestions"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="pl-12 bg-surface-container-low" 
-                  placeholder="Nhập danh mục..." 
+                  className="w-full h-12 rounded-full pl-12 pr-4 bg-surface-container-low text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-2 focus:ring-primary border-none" 
+                  placeholder="Nhập hoặc chọn danh mục..." 
+                  autoComplete="off"
                 />
+                <datalist id="category-suggestions">
+                  {categories.map((c, i) => <option key={i} value={c} />)}
+                </datalist>
               </div>
             </div>
 
@@ -105,11 +113,11 @@ export default function AddTransaction() {
               <label className="text-label-sm font-label-sm text-on-surface-variant">Ngày giao dịch</label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline">calendar_today</span>
-                <Input 
+                <input 
                   type="date" 
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="pl-12 bg-surface-container-low" 
+                  className="w-full h-12 rounded-full pl-12 pr-4 bg-surface-container-low text-on-surface focus:outline-none focus:ring-2 focus:ring-primary border-none" 
                 />
               </div>
             </div>
@@ -121,7 +129,7 @@ export default function AddTransaction() {
                 <textarea 
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  className="w-full min-h-[100px] rounded-[12px] bg-surface-container-low pl-12 py-3 text-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-1 focus:ring-secondary resize-none" 
+                  className="w-full min-h-[100px] rounded-[12px] bg-surface-container-low pl-12 py-3 text-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary resize-none border-none" 
                   placeholder="Thêm ghi chú..."
                 ></textarea>
               </div>

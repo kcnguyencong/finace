@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Link, useSearchParams, useNavigate } from "react-router-dom"
 import { supabase } from "../lib/supabase"
+import { formatCurrency, formatDate, formatTime } from "../lib/format"
 
 export default function TransactionDetail() {
   const [searchParams] = useSearchParams()
@@ -10,6 +11,10 @@ export default function TransactionDetail() {
   const [transaction, setTransaction] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showIncomeInput, setShowIncomeInput] = useState(false)
+  
+  // For linked transaction
+  const [linkedAmount, setLinkedAmount] = useState('')
+  const [isLinking, setIsLinking] = useState(false)
 
   useEffect(() => {
     if (id) {
@@ -51,8 +56,39 @@ export default function TransactionDetail() {
     }
   }
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)
+  async function handleAddLinkedIncome() {
+    if (!linkedAmount || isNaN(linkedAmount) || Number(linkedAmount) <= 0) {
+      return alert('Vui lòng nhập số tiền hợp lệ')
+    }
+    
+    try {
+      setIsLinking(true)
+      const oppositeType = transaction.type === 'expense' ? 'income' : 'expense'
+      const titlePrefix = oppositeType === 'income' ? 'Bù trừ thu nhập cho:' : 'Bù trừ chi phí cho:'
+      
+      const { error } = await supabase.from('transactions').insert([
+        {
+          title: `${titlePrefix} ${transaction.title}`,
+          amount: parseFloat(linkedAmount),
+          type: oppositeType,
+          category: 'Bù trừ (Liên kết)',
+          transaction_date: new Date().toISOString(),
+          note: `Liên kết với giao dịch ID: ${transaction.id}`,
+          account: transaction.account
+        }
+      ])
+      
+      if (error) throw error
+      
+      alert('Đã thêm khoản liên kết thành công!')
+      setShowIncomeInput(false)
+      setLinkedAmount('')
+    } catch (error) {
+      console.error('Error adding linked income:', error)
+      alert('Có lỗi xảy ra: ' + error.message)
+    } finally {
+      setIsLinking(false)
+    }
   }
 
   if (loading) {
@@ -115,7 +151,7 @@ export default function TransactionDetail() {
                 <span className="text-body-md font-body-md text-on-surface-variant">Thời gian</span>
               </div>
               <span className="text-body-md font-body-md text-on-surface">
-                {new Date(transaction.transaction_date).toLocaleString('vi-VN')}
+                {formatTime(transaction.transaction_date)} {formatDate(transaction.transaction_date)}
               </span>
             </div>
             {/* Account */}
@@ -136,6 +172,63 @@ export default function TransactionDetail() {
                 {transaction.note || 'Không có ghi chú'}
               </p>
             </div>
+          </div>
+        </section>
+
+        {/* Linked Income Section */}
+        <section className={`rounded-xl p-5 space-y-4 shadow-lg border ${isIncome ? 'bg-error-container text-on-error-container border-error' : 'bg-primary-container text-on-primary-container border-primary'}`}>
+          <div className="flex items-center gap-3">
+            <div className="bg-white/20 w-10 h-10 rounded-full flex items-center justify-center">
+              <span className="material-symbols-outlined text-white">add_card</span>
+            </div>
+            <div>
+              <h3 className="text-label-lg font-label-lg text-white">Thêm khoản {isIncome ? 'chi tiêu' : 'thu'} liên kết</h3>
+              <p className="text-label-sm font-label-sm text-white/80">Bù trừ cho giao dịch này</p>
+            </div>
+          </div>
+          <div className="space-y-3">
+            {!showIncomeInput ? (
+              <button 
+                className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white text-body-md font-semibold transition-all duration-200 flex items-center justify-center gap-2"
+                onClick={() => setShowIncomeInput(true)}
+              >
+                <span className="material-symbols-outlined text-sm">add</span>
+                Nhập số tiền bù trừ
+              </button>
+            ) : (
+              <div className="space-y-3">
+                <div className="relative">
+                  <input 
+                    type="number" 
+                    value={linkedAmount}
+                    onChange={e => setLinkedAmount(e.target.value)}
+                    className="w-full bg-surface-container-highest/10 border-none outline-none rounded-xl px-4 py-3 text-white placeholder:text-white/40 focus:ring-2 focus:ring-white/50 text-headline-md font-headline-md" 
+                    placeholder="Nhập số tiền..." 
+                    autoFocus
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 font-semibold">₫</span>
+                </div>
+                <div className="flex gap-2">
+                  <button 
+                    className="flex-1 py-2 text-white/60 text-label-sm font-label-sm hover:text-white"
+                    onClick={() => {
+                      setShowIncomeInput(false)
+                      setLinkedAmount('')
+                    }}
+                    disabled={isLinking}
+                  >
+                    Hủy
+                  </button>
+                  <button 
+                    className="flex-[2] py-2 bg-white text-primary rounded-lg text-label-sm font-bold disabled:opacity-50"
+                    onClick={handleAddLinkedIncome}
+                    disabled={isLinking}
+                  >
+                    {isLinking ? 'Đang lưu...' : 'Xác nhận'}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </section>
       </main>
