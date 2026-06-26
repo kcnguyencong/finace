@@ -44,7 +44,7 @@ export default function AddTransaction() {
   return (
     <div className="text-on-background min-h-screen pb-24 bg-surface">
       {/* Top Navigation Bar */}
-      <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/80 border-b border-outline-variant/20 px-container-padding py-md flex items-center justify-between">
+      <nav className="sticky top-0 z-50 backdrop-blur-md bg-surface/80 border-b border-white/[0.06] px-container-padding py-md flex items-center justify-between">
         <Link to="/" className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/50 transition-all active:scale-95">
           <span className="material-symbols-outlined text-on-surface">arrow_back</span>
         </Link>
@@ -53,7 +53,7 @@ export default function AddTransaction() {
       </nav>
 
       <main className="max-w-md mx-auto mt-6 px-container-padding space-y-6">
-        <div className="bg-surface-container-lowest rounded-xl p-6 shadow-[0px_4px_20px_rgba(15,23,42,0.05)] space-y-4">
+        <div className="bg-surface-container-lowest rounded-xl p-6 shadow-[0px_4px_20px_rgba(0,0,0,0.2)] border border-white/[0.04] space-y-4">
           
           <div className="space-y-2 text-center pb-4">
             <p className="text-label-sm text-on-surface-variant uppercase">Số tiền</p>
@@ -62,29 +62,29 @@ export default function AddTransaction() {
                 type="number" 
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full bg-transparent border-none text-center text-display-md font-display-md text-primary focus:ring-0 placeholder:text-outline-variant p-0 m-0 outline-none" 
+                className="w-full bg-transparent border-none text-center text-display-md font-display-md text-secondary focus:ring-0 placeholder:text-outline-variant p-0 m-0 outline-none" 
                 placeholder="0" 
                 autoFocus
               />
-              <span className="text-headline-lg text-primary ml-2">đ</span>
+              <span className="text-headline-lg text-secondary ml-2">đ</span>
             </div>
           </div>
 
-          <div className="space-y-4 pt-4 border-t border-outline-variant/20">
+          <div className="space-y-4 pt-4 border-t border-white/[0.06]">
             <div className="space-y-1.5">
               <label className="text-label-sm font-label-sm text-on-surface-variant">Loại giao dịch</label>
               <div className="grid grid-cols-2 gap-2">
                 <Button 
                   onClick={() => { setType('income'); setCategory('') }}
                   variant={type === 'income' ? 'primary' : 'ghost'} 
-                  className={type === 'income' ? 'bg-secondary-container/20 text-secondary shadow-none hover:bg-secondary-container/30' : 'bg-surface-container text-on-surface'}
+                  className={type === 'income' ? 'bg-secondary-container/30 text-secondary shadow-none hover:bg-secondary-container/40 border border-secondary/20' : 'bg-surface-container text-on-surface border border-white/[0.06]'}
                 >
                   Thu nhập
                 </Button>
                 <Button 
                   onClick={() => { setType('expense'); setCategory('') }}
                   variant={type === 'expense' ? 'primary' : 'ghost'} 
-                  className={type === 'expense' ? 'bg-error-container/20 text-error shadow-none hover:bg-error-container/30' : 'bg-surface-container text-on-surface'}
+                  className={type === 'expense' ? 'bg-error-container/30 text-error shadow-none hover:bg-error-container/40 border border-error/20' : 'bg-surface-container text-on-surface border border-white/[0.06]'}
                 >
                   Chi tiêu
                 </Button>
@@ -99,7 +99,7 @@ export default function AddTransaction() {
                   list="category-suggestions"
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="w-full h-12 rounded-full pl-12 pr-4 bg-surface-container-low text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-2 focus:ring-primary border-none" 
+                  className="w-full h-12 rounded-full pl-12 pr-4 bg-surface-container text-on-surface placeholder:text-outline-variant focus:outline-none focus:ring-2 focus:ring-secondary/50 border border-white/[0.06]" 
                   placeholder="Nhập hoặc chọn danh mục..." 
                   autoComplete="off"
                 />
@@ -117,7 +117,7 @@ export default function AddTransaction() {
                   type="date" 
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full h-12 rounded-full pl-12 pr-4 bg-surface-container-low text-on-surface focus:outline-none focus:ring-2 focus:ring-primary border-none" 
+                  className="w-full h-12 rounded-full pl-12 pr-4 bg-surface-container text-on-surface focus:outline-none focus:ring-2 focus:ring-secondary/50 border border-white/[0.06]" 
                 />
               </div>
             </div>
@@ -129,7 +129,7 @@ export default function AddTransaction() {
                 <textarea 
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  className="w-full min-h-[100px] rounded-[12px] bg-surface-container-low pl-12 py-3 text-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary resize-none border-none" 
+                  className="w-full min-h-[100px] rounded-[12px] bg-surface-container pl-12 py-3 text-sm text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-2 focus:ring-secondary/50 resize-none border border-white/[0.06]" 
                   placeholder="Thêm ghi chú..."
                 ></textarea>
               </div>
@@ -140,12 +140,12 @@ export default function AddTransaction() {
       </main>
 
       {/* Bottom Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-xl border-t border-outline-variant/30 px-container-padding py-4 flex gap-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-surface/80 backdrop-blur-xl border-t border-white/[0.06] px-container-padding py-4 flex gap-4">
         <Button 
           variant="primary" 
           disabled={loading}
           onClick={handleSave}
-          className="w-full h-14 text-[16px] rounded-xl bg-primary text-white hover:bg-primary/90"
+          className="w-full h-14 text-[16px] rounded-xl bg-secondary text-on-secondary hover:brightness-110 shadow-lg shadow-secondary/20"
         >
           {loading ? 'Đang lưu...' : 'Lưu giao dịch'}
         </Button>
