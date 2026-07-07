@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate, useSearchParams } from "react-router-dom"
 import { Button } from "../components/ui/Button"
 import { supabase } from "../lib/supabase"
 
@@ -16,9 +16,12 @@ function parseRawAmount(formatted) {
 
 export default function AddTransaction() {
   const navigate = useNavigate()
-  const [displayAmount, setDisplayAmount] = useState('') // chuỗi hiển thị: "1.000.000"
-  const [rawAmount, setRawAmount] = useState('')         // số thật: "1000000"
-  const [type, setType] = useState('income')             // default: thu nhập
+  const [searchParams] = useSearchParams()
+  const initialType = searchParams.get('type') === 'expense' ? 'expense' : 'income'
+
+  const [displayAmount, setDisplayAmount] = useState('')
+  const [rawAmount, setRawAmount] = useState('')
+  const [type, setType] = useState(initialType)   // lấy từ URL param
   const [category, setCategory] = useState('')
   const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   const [note, setNote] = useState('')

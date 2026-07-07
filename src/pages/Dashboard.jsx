@@ -170,19 +170,21 @@ export default function Dashboard() {
           </div>
         </section>
 
-        {/* Quick Action Icons */}
-        <section className="flex justify-between items-start gap-xs no-scrollbar overflow-x-auto py-xs">
-          <Link to="/add" className="flex flex-col items-center min-w-[72px] gap-sm cursor-pointer group">
-            <div className="w-12 h-12 rounded-full bg-secondary-container/30 text-secondary flex items-center justify-center group-hover:bg-secondary-container/50 transition-colors">
-              <span className="material-symbols-outlined">add_card</span>
-            </div>
-            <span className="text-[10px] font-label-sm text-center leading-tight">Thêm thu nhập</span>
+        {/* Quick Action Buttons */}
+        <section className="grid grid-cols-2 gap-sm">
+          <Link
+            to="/add?type=income"
+            className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-secondary-container/25 border border-secondary/20 text-secondary hover:bg-secondary-container/40 active:scale-[0.97] transition-all duration-150 group"
+          >
+            <span className="material-symbols-outlined text-[22px]" style={{fontVariationSettings: "'FILL' 1"}}>trending_up</span>
+            <span className="text-label-lg font-label-lg">Thu nhập</span>
           </Link>
-          <Link to="/add" className="flex flex-col items-center min-w-[72px] gap-sm cursor-pointer group">
-            <div className="w-12 h-12 rounded-full bg-error-container/30 text-error flex items-center justify-center group-hover:bg-error-container/50 transition-colors">
-              <span className="material-symbols-outlined">payments</span>
-            </div>
-            <span className="text-[10px] font-label-sm text-center leading-tight">Thêm chi tiêu</span>
+          <Link
+            to="/add?type=expense"
+            className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-error-container/25 border border-error/20 text-error hover:bg-error-container/40 active:scale-[0.97] transition-all duration-150 group"
+          >
+            <span className="material-symbols-outlined text-[22px]" style={{fontVariationSettings: "'FILL' 1"}}>trending_down</span>
+            <span className="text-label-lg font-label-lg">Chi tiêu</span>
           </Link>
         </section>
 
