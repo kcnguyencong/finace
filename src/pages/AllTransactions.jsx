@@ -230,8 +230,6 @@ export default function AllTransactions() {
           </div>
         )}
       </main>
-
-      </main>
     </div>
   )
 }
