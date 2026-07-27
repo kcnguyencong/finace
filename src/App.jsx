@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './lib/AuthContext'
 import Dashboard from './pages/Dashboard'
 import TransactionDetail from './pages/TransactionDetail'
 import AddTransaction from './pages/AddTransaction'
+import AllTransactions from './pages/AllTransactions'
 import Login from './pages/Login'
 
 function ProtectedRoute({ children }) {
@@ -49,6 +50,7 @@ function AppRoutes() {
       <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
       <Route path="/transaction" element={<ProtectedRoute><TransactionDetail /></ProtectedRoute>} />
       <Route path="/add" element={<ProtectedRoute><AddTransaction /></ProtectedRoute>} />
+      <Route path="/transactions" element={<ProtectedRoute><AllTransactions /></ProtectedRoute>} />
     </Routes>
   )
 }

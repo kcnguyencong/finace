@@ -192,9 +192,9 @@ export default function Dashboard() {
         <section className="space-y-md pb-8">
           <div className="flex justify-between items-center">
             <h2 className="text-label-lg font-label-lg text-on-surface-variant uppercase tracking-wider">GIAO DỊCH GẦN ĐÂY</h2>
-            <button className="text-label-sm font-label-sm text-secondary flex items-center gap-xs">
+            <Link to="/transactions" className="text-label-sm font-label-sm text-secondary flex items-center gap-xs hover:text-secondary-fixed transition-colors">
               Xem tất cả <span className="material-symbols-outlined text-[16px]">chevron_right</span>
-            </button>
+            </Link>
           </div>
           <div className="space-y-sm">
             {loading ? (
