@@ -235,6 +235,10 @@ export default function Dashboard() {
           <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>home</span>
           <span className="text-label-sm font-label-sm">Trang chủ</span>
         </Link>
+        <Link to="/transactions" className="flex flex-col items-center justify-center text-on-surface-variant hover:text-secondary transition-colors transition-transform active:scale-90">
+          <span className="material-symbols-outlined">receipt_long</span>
+          <span className="text-label-sm font-label-sm">Giao dịch</span>
+        </Link>
         <Link to="/add" className="relative -top-6">
           <button className="w-14 h-14 bg-secondary rounded-full text-on-secondary shadow-lg shadow-secondary/30 flex items-center justify-center active:scale-95 transition-transform">
             <span className="material-symbols-outlined text-3xl">add</span>
